@@ -2,6 +2,8 @@ import Text.Printf
 
 import Impl
 
+import Exam
+
 
 -- colored printing functionality
 data Color = Normal | Red | Green
@@ -15,23 +17,6 @@ stringFor color = "\x1b[" ++ show (codeFor color) ++ "m"
 paint color string
     | coloredPrint = stringFor color ++ string ++ stringFor Normal
     | otherwise = string
-
-
--- methods and data structures used for verifying the solutions and displaying the results
-data Problem = Problem {
-    title :: String,
-    description :: String,
-    score :: Double,
-    tests :: [Test]
-} deriving (Show)
-
-data Test = Test {
-    name :: String,
-    function :: String,
-    expected :: String,
-    result :: String
-} deriving (Show)
-
 
 line = "--------------------------------------------------------------------------------"
 
