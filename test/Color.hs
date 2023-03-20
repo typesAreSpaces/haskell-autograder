@@ -3,7 +3,8 @@ module Color where
 import Text.Printf
 
 -- colored printing enabled
-coloredPrint = True
+coloredPrint = False
+-- coloredPrint = True
 
 -- colored printing functionality
 data Color = Normal | Red | Green
