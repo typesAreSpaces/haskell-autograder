@@ -1,100 +1,5 @@
-import Text.Printf
-
 import Impl
-
 import Exam
-
-
--- colored printing functionality
-data Color = Normal | Red | Green
-
-codeFor Normal = 0
-codeFor Red = 31
-codeFor Green = 32
-
-stringFor color = "\x1b[" ++ show (codeFor color) ++ "m"
-
-paint color string
-    | coloredPrint = stringFor color ++ string ++ stringFor Normal
-    | otherwise = string
-
-line = "--------------------------------------------------------------------------------"
-
-displayExam exam =
-    let solved = calculateSolved exam
-        given = calculateGiven exam
-        scored = calculateScored exam
-        maximum = calculateMaximum exam
-        result = displayResult solved given scored maximum
-    in intro ++ displayProblems exam ++ outro result
-
-intro = let title = "--== 14th week Haskell test ==--"
-        in printf "\n\n%s\n                      %s\n%s\n\n\n" line title line
-
-outro result = printf "%s\n    Results: %s\n%s\n\n\n" line result line
-
-displayResult solved given scored maximum =
-    displayScore (resultColor scored maximum) solved given scored maximum
-
-displayProblems problems = mapConcat displayProblem problems
-
-displayProblem problem@(Problem title description score tests) =
-    let solved = solveTests tests
-        given = length tests
-        scored = scoreProblem problem
-        maximum = score
-        label = displayLabel solved given scored maximum 
-        
-        header = printf "%s    %s\n\n" label title
-        body = printf "%s\n\n%s\n\n" description (displayTests tests)
-    in header ++ body
-
-displayLabel solved given scored maximum =
-    displayScore (labelColor scored maximum) solved given scored maximum
-
-displayTests :: [Test] -> String
-displayTests tests = mapConcat displayTest tests
-
-displayTest test@(Test name function expected result) =
-    let correct = solveTest test
-        label = if correct then paint Green "PASS" else paint Red "FAIL"
-        arrow = (paint Green "=>")
-        corrected = (paint Green expected)
-        mistake = if correct then "" else printf "| %s" (paint Red result)
-
-        header = printf "    %s  %s\n" label name
-        body = printf "          %s %s %s %s\n\n" function arrow corrected mistake
-    in header ++ body
-
-displayScore color solved given scored maximum =
-    paint color $ printf "[%d/%d] | [%.2f/%.2f]" solved given scored maximum
-
-labelColor solved given
-    | solved == given = Green
-    | otherwise = Red
-
-resultColor scored maximum
-    | maximum / 2 <= scored = Green
-    | otherwise = Red
-
-calculateSolved problems = sum $ map (solveTests . tests) problems
-calculateGiven problems = sum $ map (length . tests) problems
-calculateScored problems = sum $ map scoreProblem problems
-calculateMaximum problems = sum $ map score problems
-
-scoreProblem (Problem _ _ score tests) =
-    let solved = fromIntegral $ solveTests tests
-        given = fromIntegral $ length tests
-    in score * solved / given
-           
-solveTests = length . filter solveTest
-solveTest (Test _ _ expected result) = expected == result
-
-mapConcat f = foldr (++) [] . map f
-
-
-main = putStr $ displayExam $ exam
-
 
 -- define the problems and the soultions
 exam =
@@ -320,3 +225,5 @@ exam =
             ]
         }
     ]
+
+main = putStr $ displayExam $ exam

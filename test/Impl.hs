@@ -3,11 +3,6 @@ module Impl where
 -- command to run the test:
 -- runhaskell Test.hs
 
--- colored printing enabled
-coloredPrint = True
-
-
-
 -- write your solutions here
 
 
