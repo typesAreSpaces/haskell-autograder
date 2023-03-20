@@ -1,8 +1,10 @@
-import Impl
-import Exam
+module HomeworkTests where
+
+import SubmissionHandler
+import Grader
 
 -- define the problems and the soultions
-exam =
+homeworkTests =
     [
         Problem {
             title = "Camping basics",
@@ -226,4 +228,3 @@ exam =
         }
     ]
 
-main = putStr $ displayExam $ exam

@@ -1,2 +1,2 @@
 all:
-	runhaskell Test.hs
+	runhaskell Main.hs

@@ -1,4 +1,4 @@
-module Impl where
+module SubmissionHandler where
 
 -- command to run the test:
 -- runhaskell Test.hs

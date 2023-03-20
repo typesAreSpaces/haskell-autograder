@@ -1,4 +1,4 @@
-module Exam where
+module Grader where
 
 import Color
 import Text.Printf
@@ -79,10 +79,10 @@ displayProblem problem@(Problem title description score tests) =
 
 displayProblems problems = mapConcat displayProblem problems
 
-displayExam exam =
-    let solved = calculateSolved exam
-        given = calculateGiven exam
-        scored = calculateScored exam
-        maximum = calculateMaximum exam
+displaySubmission submission =
+    let solved = calculateSolved submission
+        given = calculateGiven submission
+        scored = calculateScored submission
+        maximum = calculateMaximum submission
         result = displayResult solved given scored maximum
-    in intro ++ displayProblems exam ++ outro result
+    in intro ++ displayProblems submission ++ outro result
