@@ -44,17 +44,19 @@ calculateMaximum :: [Problem] -> Int
 -- calculateMaximum problems = sum $ map (sum . (map score) . tests) problems
 calculateMaximum problems = 1
            
+checkTest :: Test -> Bool
 checkTest test = True -- TODO using hint
+
+scoreTest :: Test -> Int
 scoreTest test = 1 -- TODO using hint
 
 --scoreProblem (Problem _ score tests) =
     --let solved = fromIntegral $ solveTests tests
         --given = fromIntegral $ length tests
     --in score * solved / given
-scoreProblem :: Problem -> Int
-scoreProblem (Problem _ _ tests) = sum $ map scoreTest $ tests
 
-scoreProblemMax (Problem _ _ tests) = sum $ map score $ tests
+scoreProblem    (Problem _ _ tests) = sum $ map scoreTest $ tests
+scoreProblemMax (Problem _ _ tests) = sum $ map score     $ tests
 
 showScore color solved given scored maximum =
     paint color $ printf "[%d/%d] | [%d/%d]" solved given scored maximum
@@ -68,12 +70,11 @@ showLabel solved given scored maximum =
 showTest test@(Test name score function expected result) =
     let correct = checkTest test
         label = if correct then paint Green "PASS" else paint Red "FAIL"
-        arrow = (paint Green "=>")
-        corrected = (paint Green expected)
+        arrow = paint Green "=>"
+        corrected = paint Green expected
         mistake = if correct then "" else printf "| %s" (paint Red result)
-
         header = printf "    %s  %s\n" label name
-        body = printf "          %s %s %s %s\n\n" 
+        body   = printf "          %s %s %s %s\n\n" 
           function arrow corrected mistake
     in header ++ body
 
