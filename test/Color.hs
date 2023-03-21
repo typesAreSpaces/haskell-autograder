@@ -3,8 +3,8 @@ module Color where
 import Text.Printf
 
 -- colored printing enabled
-coloredPrint = False
--- coloredPrint = True
+--coloredPrint = False
+coloredPrint = True
 
 -- colored printing functionality
 data Color = Normal | Red | Green
@@ -24,5 +24,5 @@ labelColor solved given
     | otherwise = Red
 
 resultColor scored maximum
-    | maximum / 2 <= scored = Green
+    | maximum <= 2*scored = Green
     | otherwise = Red

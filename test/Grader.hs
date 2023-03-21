@@ -3,17 +3,18 @@ module Grader where
 import Color
 import Text.Printf
 
--- methods and data structures used for verifying the solutions and displaying the results
+-- methods and data structures used for verifying the solutions 
+-- and displaying the results
 
 data Problem = Problem {
     title :: String,
     description :: String,
-    score :: Double,
     tests :: [Test]
 } deriving (Show)
 
 data Test = Test {
     name :: String,
+    score :: Int,
     function :: String,
     expected :: String,
     result :: String
@@ -24,65 +25,78 @@ mapConcat f = foldr (++) [] . map f
 line :: String
 line = "--------------------------------------------------------------------------------"
 
-intro :: String
-intro = let title = "--== 14th week Haskell test ==--"
-        in printf "\n\n%s\n                      %s\n%s\n\n\n" line title line
-
 outro result = printf "%s\n    Results: %s\n%s\n\n\n" line result line
 
-calculateSolved  problems = sum $ map (solveTests . tests) problems
-calculateGiven   problems = sum $ map (length . tests) problems
-calculateScored  problems = sum $ map scoreProblem problems
-calculateMaximum problems = sum $ map score problems
+-- problems \equiv [Problem]
+--calculateSolved  problems = sum $ map (solveTests . tests) problems
+--calculateGiven   problems = sum $ map (length . tests) problems
+--calculateScored  problems = sum $ map scoreProblem problems
+--calculateMaximum problems = map (sum . (map score) . tests) problems
+
+calculateSolved :: [Problem] -> Int
+calculateSolved  problems = 1
+calculateGiven :: [Problem] -> Int
+calculateGiven   problems = 1
+
+calculateScored :: [Problem] -> Int
+calculateScored  problems = 1
+calculateMaximum :: [Problem] -> Int
+-- calculateMaximum problems = sum $ map (sum . (map score) . tests) problems
+calculateMaximum problems = 1
            
-solveTests = length . filter solveTest
-solveTest (Test _ _ expected result) = expected == result
+checkTest test = True -- TODO using hint
+scoreTest test = 1 -- TODO using hint
 
-scoreProblem (Problem _ _ score tests) =
-    let solved = fromIntegral $ solveTests tests
-        given = fromIntegral $ length tests
-    in score * solved / given
+--scoreProblem (Problem _ score tests) =
+    --let solved = fromIntegral $ solveTests tests
+        --given = fromIntegral $ length tests
+    --in score * solved / given
+scoreProblem :: Problem -> Int
+scoreProblem (Problem _ _ tests) = sum $ map scoreTest $ tests
 
-displayScore color solved given scored maximum =
-    paint color $ printf "[%d/%d] | [%.2f/%.2f]" solved given scored maximum
+scoreProblemMax (Problem _ _ tests) = sum $ map score $ tests
 
-displayResult solved given scored maximum =
-    displayScore (resultColor scored maximum) solved given scored maximum
+showScore color solved given scored maximum =
+    paint color $ printf "[%d/%d] | [%d/%d]" solved given scored maximum
 
-displayLabel solved given scored maximum =
-    displayScore (labelColor scored maximum) solved given scored maximum
+showResult solved given scored maximum =
+    showScore (resultColor scored maximum) solved given scored maximum
 
-displayTest test@(Test name function expected result) =
-    let correct = solveTest test
+showLabel solved given scored maximum =
+    showScore (labelColor scored maximum) solved given scored maximum
+
+showTest test@(Test name score function expected result) =
+    let correct = checkTest test
         label = if correct then paint Green "PASS" else paint Red "FAIL"
         arrow = (paint Green "=>")
         corrected = (paint Green expected)
         mistake = if correct then "" else printf "| %s" (paint Red result)
 
         header = printf "    %s  %s\n" label name
-        body = printf "          %s %s %s %s\n\n" function arrow corrected mistake
+        body = printf "          %s %s %s %s\n\n" 
+          function arrow corrected mistake
     in header ++ body
 
-displayTests :: [Test] -> String
-displayTests tests = mapConcat displayTest tests
+showTests :: [Test] -> String
+showTests tests = mapConcat showTest tests
 
-displayProblem problem@(Problem title description score tests) =
-    let solved = solveTests tests
+showProblem problem@(Problem title description tests) =
+    let 
+        solved = scoreProblem problem
         given = length tests
         scored = scoreProblem problem
-        maximum = score
-        label = displayLabel solved given scored maximum 
-        
+        maximum = scoreProblemMax problem
+        label = showLabel solved given scored maximum  
         header = printf "%s    %s\n\n" label title
-        body = printf "%s\n\n%s\n\n" description (displayTests tests)
+        body = printf "%s\n\n%s\n\n" description (showTests tests)
     in header ++ body
 
-displayProblems problems = mapConcat displayProblem problems
+showProblems problems = mapConcat showProblem problems
 
-displaySubmission submission =
+showSubmission submission =
     let solved = calculateSolved submission
         given = calculateGiven submission
         scored = calculateScored submission
         maximum = calculateMaximum submission
-        result = displayResult solved given scored maximum
-    in intro ++ displayProblems submission ++ outro result
+        result = showResult solved given scored maximum
+    in showProblems submission ++ outro result

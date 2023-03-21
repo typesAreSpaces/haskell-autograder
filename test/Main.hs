@@ -1,4 +1,4 @@
 import Grader
 import HomeworkTests
 
-main = putStr $ displaySubmission $ homeworkTests
+main = putStr $ showSubmission $ homeworkTests
